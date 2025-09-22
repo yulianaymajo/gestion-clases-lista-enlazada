@@ -1,10 +1,11 @@
+// Clase que representa un curso con estudiantes
 public class ClassRoom {
-    String id;
-    String name;
-    int credits;
-    Student head;  // inicio de la lista enlazada
+    String id;         // código de la materia
+    String name;       // nombre de la materia
+    int credits;       // cantidad de créditos
+    LinkedList students; // lista enlazada de estudiantes inscritos
 
-
+    // Constructor: creo la clase con sus datos
     public ClassRoom(String id, String name, int credits) {
         if (credits <= 0) {
             throw new IllegalArgumentException("Los créditos deben ser positivos.");
@@ -12,51 +13,21 @@ public class ClassRoom {
         this.id = id;
         this.name = name;
         this.credits = credits;
-        this.head = null;
+        this.students = new LinkedList(); // inicio la lista vacía
     }
 
-   
-    public void addStudentAtStart(Student s) {
-        if (findStudent(s.idNumber) != null) {
+    // Agregar estudiante en orden de registro
+    public void addStudent(Student s) {
+        if (students.findStudent(s.idNumber) != null) {
             System.out.println("Error: ya existe un estudiante con id " + s.idNumber);
             return;
         }
-        s.next = head;
-        head = s;
+        students.insertAtEnd(s); // aquí garantizo que se guarde en el orden en que llega
     }
 
-    
-    public void addStudentAtEnd(Student s) {
-        if (findStudent(s.idNumber) != null) {
-            System.out.println("Error: ya existe un estudiante con id " + s.idNumber);
-            return;
-        }
-        if (head == null) {
-            head = s;
-        } else {
-            Student temp = head;
-            while (temp.next != null) {
-                temp = temp.next;
-            }
-            temp.next = s;
-        }
-    }
-
-    
-    public Student findStudent(String idNumber) {
-        Student temp = head;
-        while (temp != null) {
-            if (temp.idNumber.equals(idNumber)) {
-                return temp;
-            }
-            temp = temp.next;
-        }
-        return null;
-    }
-
-    
+    // Actualizar datos de un estudiante
     public void updateStudent(String idNumber, String newFirstName, String newLastName, int newSemester, String newProgram) {
-        Student s = findStudent(idNumber);
+        Student s = students.findStudent(idNumber);
         if (s == null) {
             System.out.println("Estudiante no encontrado.");
             return;
@@ -68,49 +39,20 @@ public class ClassRoom {
         System.out.println("Estudiante actualizado.");
     }
 
- 
+    // Eliminar estudiante
     public void removeStudent(String idNumber) {
-        if (head == null) {
-            System.out.println("Lista vacía, no hay estudiantes que eliminar.");
-            return;
-        }
-
-        
-        if (head.idNumber.equals(idNumber)) {
-            head = head.next;
-            System.out.println("Estudiante eliminado (era la cabeza).");
-            return;
-        }
-
-        Student temp = head;
-        while (temp.next != null && !temp.next.idNumber.equals(idNumber)) {
-            temp = temp.next;
-        }
-
-        if (temp.next == null) {
-            System.out.println("Estudiante no encontrado.");
-        } else {
-            temp.next = temp.next.next;
-            System.out.println("Estudiante eliminado.");
-        }
+        students.removeStudent(idNumber);
     }
 
- 
+    // Mostrar todos los estudiantes
     public void showStudents() {
-        if (head == null) {
-            System.out.println("No hay estudiantes inscritos.");
-            return;
-        }
-        Student temp = head;
-        while (temp != null) {
-            System.out.println(temp.idNumber + " - " + temp.firstName + " " + temp.lastName + " | Sem: " + temp.semester + " | Prog: " + temp.program);
-            temp = temp.next;
-        }
+        students.showStudents();
     }
 
-    
+    // Vaciar lista de estudiantes
     public void clearStudents() {
-        head = null;  
-        System.out.println("Lista de estudiantes liberada.");
+        students.clearStudents();
     }
 }
+
+
